@@ -1,16 +1,18 @@
 CC     = gcc
-CFLAGS = -Wall -Wextra -std=c11 -g
+CFLAGS = -Wall -Wextra -std=c11 -D_GNU_SOURCE -g
 TARGET = detector
+SRCS   = main.c log.c proc.c elfcheck.c scanner.c monitor.c
+OBJS   = $(SRCS:.c=.o)
 
 all: $(TARGET)
 
-$(TARGET): detector.c
-	$(CC) $(CFLAGS) -o $@ $<
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $^
 
-debug: CFLAGS += -O0 -DDEBUG
-debug: $(TARGET)
+%.o: %.c
+	$(CC) $(CFLAGS) -c -o $@ $<
 
 clean:
-	rm -f $(TARGET)
+	rm -f $(TARGET) $(OBJS)
 
-.PHONY: all debug clean
+.PHONY: all clean
